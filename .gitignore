@@ -52,6 +52,9 @@ gradle-app.setting
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 
+# ignore all .idea directory
+.idea
+
 # Gradle:
 .idea/**/gradle.xml
 .idea/**/libraries
