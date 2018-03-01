@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-annotation.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-annotation.iml" group="newyear-annotation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-annotation/newyear-annotation_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-annotation/newyear-annotation_main.iml" group="newyear-annotation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-annotation/newyear-annotation_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-annotation/newyear-annotation_test.iml" group="newyear-annotation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-aop/newyear-aop.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-aop/newyear-aop.iml" group="newyear-aop" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-aop/newyear-aop_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-aop/newyear-aop_main.iml" group="newyear-aop" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-aop/newyear-aop_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-aop/newyear-aop_test.iml" group="newyear-aop" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-bean.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-bean.iml" group="newyear-bean" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-bean/newyear-bean_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-bean/newyear-bean_main.iml" group="newyear-bean" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-bean/newyear-bean_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-bean/newyear-bean_test.iml" group="newyear-bean" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildSrc/newyear-build-src.iml" filepath="$PROJECT_DIR$/.idea/modules/buildSrc/newyear-build-src.iml" group="newyear-build-src" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildSrc/newyear-build-src_main.iml" filepath="$PROJECT_DIR$/.idea/modules/buildSrc/newyear-build-src_main.iml" group="newyear-build-src" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/buildSrc/newyear-build-src_test.iml" filepath="$PROJECT_DIR$/.idea/modules/buildSrc/newyear-build-src_test.iml" group="newyear-build-src" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-context/newyear-context.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-context/newyear-context.iml" group="newyear-context" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-context/newyear-context_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-context/newyear-context_main.iml" group="newyear-context" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-context/newyear-context_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-context/newyear-context_test.iml" group="newyear-context" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-core/newyear-core.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-core/newyear-core.iml" group="newyear-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-core/newyear-core_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-core/newyear-core_main.iml" group="newyear-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-core/newyear-core_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-core/newyear-core_test.iml" group="newyear-core" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-domain.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-domain.iml" group="newyear-domain" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-domain/newyear-domain_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-domain/newyear-domain_main.iml" group="newyear-domain" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-domain/newyear-domain_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-domain/newyear-domain_test.iml" group="newyear-domain" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-event.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-event.iml" group="newyear-event" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-event/newyear-event_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-event/newyear-event_main.iml" group="newyear-event" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-event/newyear-event_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-event/newyear-event_test.iml" group="newyear-event" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-feature.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-feature.iml" group="newyear-feature" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-feature/newyear-feature_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-feature/newyear-feature_main.iml" group="newyear-feature" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-feature/newyear-feature_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-feature/newyear-feature_test.iml" group="newyear-feature" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-web.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-web.iml" group="newyear-web" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-web/newyear-web_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-web/newyear-web_main.iml" group="newyear-web" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear-web/newyear-web_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear-web/newyear-web_test.iml" group="newyear-web" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear_main.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear_main.iml" group="newyear" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/newyear_test.iml" filepath="$PROJECT_DIR$/.idea/modules/newyear_test.iml" group="newyear" />
+    </modules>
+  </component>
+</project>
