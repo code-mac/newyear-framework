@@ -17,6 +17,8 @@
 package com.apehat.newyear.event;
 
 import com.apehat.newyear.util.ClassUtils;
+import com.apehat.newyear.util.GenericUtils;
+import com.apehat.newyear.util.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +40,9 @@ public final class EventBus implements EventDispatcher<Event> {
     /**
      * The policy lock.
      */
-    private static final Object POLICY_LOCK = new Object();
+    private static final Object LOCK = new Object();
     /**
-     * The REPOSITORY be used to store {@code DispatcherProvider}
+     * The REPOSITORY be used to storeCustom {@code DispatcherProvider}
      */
     private static final Repository REPOSITORY = new Repository();
     /**
@@ -51,34 +53,39 @@ public final class EventBus implements EventDispatcher<Event> {
 
     static {
         /*
-         * Initialize the REPOSITORY by configured providers.  These providers，
+         * Initialize the REPOSITORY by configured custom.  These custom，
          * as default implemention， support the even module running.
          * The configuration file at /META-INF/service/com.apehat.newyear.event.DispatcherProvider
          */
         ServiceLoader<DispatcherProvider> providers = ServiceLoader.load(DispatcherProvider.class);
         for (DispatcherProvider provider : providers) {
-            DispatcherProvider<? extends EventDispatcher<? super Event>> genericProvider =
-                    (DispatcherProvider<? extends EventDispatcher<? super Event>>) provider;
-            EventDispatcher<? extends Event> dispatcher = genericProvider.get();
-            Class<? extends Event> type = dispatcher.type();
-            getInstance().registerProvider(type, genericProvider);
+            getInstance().getRepository().storeBuildIn(provider);
         }
     }
 
+    /**
+     * Construct a {@code EventBus} instance.
+     *
+     * @throws AssertionError already have a instance.
+     */
     private EventBus() {
         if (INSTANCE != null) {
             throw new AssertionError("Reflection unsupported.");
         }
     }
 
+    /**
+     * Returns the {@code EventBus} instance.
+     *
+     * @return the instance.
+     */
     public static EventBus getInstance() {
         return INSTANCE;
     }
 
     /**
      * Sets an application's {@code EventBusDispatchPolicy}.
-     * This method can be called at most once in a given Java Virtual
-     * Machine.
+     * This method can be called at most once in a given Java Virtual Machine.
      * <p>
      * The {@code EventBusDispatchComparator} instance is used to
      * find a event dispatcher provider from a type token.
@@ -87,8 +94,8 @@ public final class EventBus implements EventDispatcher<Event> {
      * @throws Error event bus dispatch policy
      */
     public static void setDispatchPolicy(EventBusDispatchPolicy policy) {
-        Objects.requireNonNull(dispatchPolicy, "Must specific a dispatchPolicy.");
-        synchronized (POLICY_LOCK) {
+        Objects.requireNonNull(dispatchPolicy, "Must specific a dispatch policy.");
+        synchronized (LOCK) {
             if (EventBus.dispatchPolicy != null) {
                 throw new Error("Policy already defined.");
             }
@@ -96,21 +103,49 @@ public final class EventBus implements EventDispatcher<Event> {
         }
     }
 
+    /**
+     * The method {@link EventDispatcher#submit(Event)} proxy.
+     * <p>
+     * This implemention by invoke {@link #getDispatcher(Class)} get a event dispatcher,
+     * then use it to submit.
+     *
+     * @param event the event
+     * @see EventDispatcher#submit(Event)
+     * @see #getDispatcher(Class)
+     */
     @Override
     public void submit(Event event) {
         submitHelper(event);
     }
 
+    /**
+     * The method {@link EventDispatcher#submit(Event)} proxy.
+     * <p>
+     * This implemention by invoke {@link #getDispatcher(Class)} get a event dispatcher,
+     * then use it to submit.
+     *
+     * @param eventType  the event type
+     * @param subscriber the subscriber
+     * @param <U>        the type token
+     * @see EventDispatcher#subscribe(Class, EventSubscriber)
+     * @see #getDispatcher(Class)
+     */
     @Override
-    public <U extends Event> void subscribe(Class<U> type, EventSubscriber<? super U> subscriber) {
-        getDispatcher(type).subscribe(type, subscriber);
+    public <U extends Event> void subscribe(Class<U> eventType, EventSubscriber<? super U> subscriber) {
+        getDispatcher(eventType).subscribe(eventType, subscriber);
     }
 
+    /**
+     * @throws UnsupportedOperationException the event bus does not support without type token
+     */
     @Override
-    public Class<Event> type() {
-        return Event.class;
+    public void subscribe(EventSubscriber<? super Event> subscriber) {
+        throw new UnsupportedOperationException(getClass() + " does not support without type token.");
     }
 
+    /**
+     * @throws UnsupportedOperationException the event bus does not support reset.
+     */
     @Override
     public void reset() {
         throw new UnsupportedOperationException(getClass() + " does not support to reset.");
@@ -121,21 +156,90 @@ public final class EventBus implements EventDispatcher<Event> {
         return this;
     }
 
+    /**
+     * Register the {@code provider} by {@code eventType}. If provider already exists, will
+     * throw {@link IllegalArgumentException}.
+     *
+     * @param eventType the type token, as key.
+     * @param provider  the provider as value.
+     * @param <T>       the type of type token.
+     * @return this
+     * @throws NullPointerException     specified event type or provider is null
+     * @throws IllegalArgumentException the provider of specified {@code eventType} already exists.
+     * @see #replcaeProvider(Class, DispatcherProvider)
+     */
     public <T extends Event> EventBus registerProvider(
             Class<T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
         Objects.requireNonNull(eventType, "Must specific type token - eventType");
         Objects.requireNonNull(provider, "Must specific provider.");
 
-        getRepository().store(eventType, provider);
+        synchronized (LOCK) {
+            DispatcherProvider<? extends EventDispatcher<? super T>> rp = getRepository().find(eventType);
+            Validation.requireFalse(rp == null || getRepository().isBuildIn(rp),
+                    "Already registered a provider [%s], by [%s]", rp, eventType);
+        }
+        getRepository().storeCustom(eventType, provider);
         return this;
     }
 
+    /**
+     * Mandatory register by specified {@code eventType} and {@code provider}. If the provider of event type
+     * already exists, this will replace old provider. If non old provider, this will to register.
+     * <p>
+     * This method is not recommended, unless you must register the {@code provider}, and cannot rewrite old
+     * code source.
+     *
+     * @param eventType the type token, as key.
+     * @param provider  the provider as value.
+     * @param <T>       the type of type token.
+     * @return this
+     * @throws NullPointerException specified event type or provider is null
+     */
+    public <T extends Event> EventBus replcaeProvider(
+            Class<T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
+        Objects.requireNonNull(eventType, "Must specific type token - eventType");
+        Objects.requireNonNull(provider, "Must specific provider.");
+
+        getRepository().storeCustom(eventType, provider);
+        return this;
+    }
+
+    /**
+     * Returns a appropriate {@code EventDispatcher} by specified {@code eventType}.
+     * If hadn't register a provider of the event type, or it's superclass, will try to
+     * returns a default dispatcher. If don;t have default dispatcher to use, will throw
+     * a {@link IllegalStateException}.
+     *
+     * @param eventType the type toke, to get dispatcher
+     * @param <T>       the type of type token.
+     * @return a dispatcher.
+     * @throws NullPointerException  specified event type of policy is null
+     * @throws IllegalStateException cannot found appropriate dispatcher.
+     */
     public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType) {
         return getDispatcher(eventType, new DefaultPolicy());
     }
 
-    public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType, EventBusDispatchPolicy policy) {
+    /**
+     * Returns a appropriate {@code EventDispatcher} by specified {@code eventType} and
+     * policy.
+     * <p>
+     * If hadn't register a provider of the event type, or it's superclass, will try to
+     * returns a default dispatcher. If don;t have default dispatcher to use, will throw
+     * a {@link IllegalStateException}.
+     *
+     * @param eventType the type toke, to get dispatcher
+     * @param policy    the dispatch policy, to find appropriate dispatcher
+     * @param <T>       the type of type token.
+     * @return a dispatcher.
+     * @throws NullPointerException  specified event type of policy is null
+     * @throws IllegalStateException cannot found appropriate dispatcher.
+     * @see EventBusDispatchPolicy
+     */
+    public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType,
+                                                                      EventBusDispatchPolicy policy) {
         Objects.requireNonNull(eventType, "Cannot find provider by null");
+        Objects.requireNonNull(policy, "Must specified a policy.");
 
         DispatcherProvider<? extends EventDispatcher<? super T>> provider = getRepository().find(eventType);
 
@@ -163,7 +267,7 @@ public final class EventBus implements EventDispatcher<Event> {
 
         // cannot found provider - try to find default provider
         if (provider == null) {
-            provider = getRepository().find(type());
+            provider = getRepository().find(Event.class);
         }
 
         // don't have default provider - throw exception.
@@ -173,7 +277,6 @@ public final class EventBus implements EventDispatcher<Event> {
 
         return provider.get();
     }
-
 
     private <T extends Event> void submitHelper(T event) {
         // Type safe, method limit is <T extends Event>
@@ -206,24 +309,73 @@ public final class EventBus implements EventDispatcher<Event> {
         }
     }
 
+    /**
+     * The providers repository, to store build in providers and custom providers
+     */
     private static class Repository {
 
-        private final Map<Class<? extends Event>, DispatcherProvider> providers = new ConcurrentHashMap<>();
+        private final Map<Class<? extends Event>, DispatcherProvider> builtIn = new ConcurrentHashMap<>(16);
+        private final Map<Class<? extends Event>, DispatcherProvider> custom = new ConcurrentHashMap<>();
 
-        private <T extends Event> void store(
-                Class<? extends T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
+        /**
+         * Store a build in provider. This method only should be called at initialization.
+         *
+         * @param provider a build in provider
+         */
+        private void storeBuildIn(DispatcherProvider<?> provider) {
+            assert provider != null;
+
+            EventDispatcher<?> dispatcher = provider.get();
+            assert dispatcher != null;
+            Class<? extends EventDispatcher> aClass = dispatcher.getClass();
+
+            // type safe of EventDispatcher generic statement
+            // because already statement EventDispatcher<T extends Event>
+            @SuppressWarnings("unchecked") Class<? extends Event> parameterType =
+                    (Class<? extends Event>) GenericUtils.getGenericParameters(aClass, EventDispatcher.class)[0];
+
+            assert parameterType != null;
+
+            builtIn.put(parameterType, provider);
+        }
+
+        /**
+         * Store a custom provider, use the specified {@code eventType} as key.
+         *
+         * @param eventType a type token, as key. It's instance had extended of {@code Event}
+         * @param provider  the provider, as value. Can provide a {@code EventDispatcher} to
+         *                  handle {@code eventType} instance
+         * @param <T>       the type token
+         */
+        private <T extends Event> void storeCustom(Class<? extends T> eventType,
+                                                   DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
             assert eventType != null;
             assert provider != null;
 
-            providers.put(eventType, provider);
+            DispatcherProvider absent = custom.put(eventType, provider);
+
+            assert absent == null;
         }
 
         private <T extends Event> DispatcherProvider<? extends EventDispatcher<? super T>> find(Class<T> eventType) {
             assert eventType != null;
+            DispatcherProvider provider = custom.get(eventType);
+            if (provider == null) {
+                provider = builtIn.get(eventType);
+            }
             // type safe, can ensure by method put
-            @SuppressWarnings("unchecked") DispatcherProvider<? extends EventDispatcher<? super T>> provider =
-                    providers.get(eventType);
-            return provider;
+            @SuppressWarnings("unchecked") DispatcherProvider<? extends EventDispatcher<? super T>> providerToUse = provider;
+            return providerToUse;
+        }
+
+        /**
+         * Determine whether the provider is belong to build in providers.
+         *
+         * @param provider the provider to check
+         * @return true, if the provider is build in provider, otherwise, false.
+         */
+        private boolean isBuildIn(DispatcherProvider<?> provider) {
+            return builtIn.containsValue(provider);
         }
     }
 }
