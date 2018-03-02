@@ -16,9 +16,8 @@
 
 package com.apehat.newyear.util;
 
-import com.apehat.newyear.core.NullArgumentException;
-import com.apehat.newyear.validation.annotation.Nullable;
 import com.apehat.newyear.validation.Validation;
+import com.apehat.newyear.validation.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -136,10 +135,10 @@ public class ClassUtils {
      *
      * @param aClass the class will to be get it's package name
      * @return the package name of specified class
-     * @throws NullArgumentException specified class is null
+     * @throws NullPointerException specified class is null
      */
     public static String getPackageName(Class<?> aClass) {
-        return Validation.requireNonNull(aClass).getPackage().getName();
+        return Objects.requireNonNull(aClass).getPackage().getName();
     }
 
     /**
@@ -148,11 +147,11 @@ public class ClassUtils {
      * @param aClass a subclass
      * @param <T>    the type of subclass
      * @return the class array, contains all super classes of specified class.
-     * @throws NullArgumentException specified class is null
+     * @throws NullPointerException specified class is null
      * @see #getSuperclassesWithinBounds(Class, Class)
      */
     public static <T> Set<Class<? super T>> getSuperclasses(Class<T> aClass) {
-        Validation.requireNonNull(aClass, "Must specified a class");
+        Objects.requireNonNull(aClass, "Must specified a class");
 
         Set<Class<? super T>> superclasses = new HashSet<>();
         Class<? super T> currentSuper = aClass.getSuperclass();
@@ -178,10 +177,10 @@ public class ClassUtils {
      * The value of set is super of {@code lower}, and is sub of {@code upper}.
      * If the classes not exists, what had be extended by {@code lower}, and
      * it had extended (or implemented) {@code upper}, will return an empty set.
-     * @throws NullArgumentException specified lower bound is null
+     * @throws NullPointerException specified lower bound is null
      */
     public static <T> Set<Class<T>> getSuperclassesWithinBounds(Class<? extends T> lower, Class<T> upper) {
-        Validation.requireNonNull(lower, "Must specified a class");
+        Objects.requireNonNull(lower, "Must specified a class");
 
         if (upper == null) {
             // After type erasures, upper is Class<Object>, So Object.class always can safety convert
@@ -208,10 +207,10 @@ public class ClassUtils {
      * @param aClass a class
      * @return the interfaces set of specified class. If specified had not
      * implemented any interface. will return a empty set
-     * @throws NullArgumentException specified class is null
+     * @throws NullPointerException specified class is null
      */
     public static <T> Set<Class<? super T>> getInterfaces(Class<T> aClass) {
-        Validation.requireNonNull(aClass, "Must specified a class");
+        Objects.requireNonNull(aClass, "Must specified a class");
 
         // The interfaces class of specified class,
         // always is super of specified class
@@ -239,13 +238,13 @@ public class ClassUtils {
      * @param upper a interface class
      * @param <T>   the type of specified superclass
      * @return the interfaces of specified subclass.
-     * @throws NullArgumentException    specified subclass or interface is null
+     * @throws NullPointerException     specified subclass or interface is null
      * @throws IllegalArgumentException specified interface class doesn't belong
      *                                  to a interface;
      */
     public static <T> Set<Class<T>> getInterfacesWithinBounds(Class<? extends T> lower, Class<T> upper) {
-        Validation.requireNonNull(lower, "Must specified a class");
-        Validation.requireNonNull(upper, "Must specified upper");
+        Objects.requireNonNull(lower, "Must specified a class");
+        Objects.requireNonNull(upper, "Must specified upper");
 
         if (!Object.class.equals(upper) && !upper.isInterface()) {
             throw new IllegalArgumentException(
@@ -275,10 +274,10 @@ public class ClassUtils {
      * @param aClass a subclass
      * @param <T>    the type of subclass
      * @return all superclass and interfaces of specified subclass
-     * @throws NullArgumentException specified class is null
+     * @throws NullPointerException specified class is null
      */
     public static <T> Set<Class<? super T>> getClasses(Class<T> aClass) {
-        Validation.requireNonNull(aClass, "Must specified a class");
+        Objects.requireNonNull(aClass, "Must specified a class");
 
         Set<Class<? super T>> classes = new HashSet<>(getInterfaces(aClass));
         classes.addAll(getSuperclasses(aClass));
@@ -301,10 +300,10 @@ public class ClassUtils {
      * The value of set is super of {@code lower}, and is sub of {@code upper}.
      * If the classes not exists, what had be implemented {@code lower}, and
      * it had implemented {@code upper}, will return an empty set.
-     * @throws NullArgumentException specified lower bound is null
+     * @throws NullPointerException specified lower bound is null
      */
     public static <T> Set<Class<T>> getClassesWithinBounds(Class<? extends T> lower, Class<T> upper) {
-        Validation.requireNonNull(lower, "Must specified subclass");
+        Objects.requireNonNull(lower, "Must specified subclass");
 
         if (upper == null) {
             // After type erasures, upper is Class<Object>, So Object.class always can safety convert
@@ -328,7 +327,7 @@ public class ClassUtils {
      * @param name the global qualified name of class (contains package)
      * @return null, if the class of specified name is not available.
      * otherwise, the class of specified name.
-     * @throws NullArgumentException specified name is null.
+     * @throws NullPointerException specified name is null.
      * @see #getDefaultClassLoader()
      * @see #forName(String, ClassLoader)
      */
@@ -348,6 +347,8 @@ public class ClassUtils {
      * @see #forName(String)
      */
     public static Class<?> forName(String name, @Nullable ClassLoader loader) {
+        Objects.requireNonNull(name, "Must specific a class name");
+
         if (loader == null) {
             loader = getDefaultClassLoader();
         }
@@ -399,6 +400,9 @@ public class ClassUtils {
      */
     public static <T> Collection<Class<T>> sort(
             Collection<Class<T>> classes, Comparator<? super Class<T>> comparator) {
+        Objects.requireNonNull(classes, "Must specific class collection");
+        Objects.requireNonNull(comparator, "Must specific comparator");
+
         ArrayList<Class<T>> list = new ArrayList<>(classes.size());
         list.addAll(classes);
         list.sort(comparator);
@@ -414,7 +418,6 @@ public class ClassUtils {
      * @throws NullPointerException specified className is null.
      */
     public static boolean isAvailable(String className) {
-        // fail fast
         Objects.requireNonNull(className, "Must specified a class name.");
 
         try {
@@ -432,10 +435,11 @@ public class ClassUtils {
      * @param location the location will be scan.
      * @return all classes, in specified location. If non any classes, will return a
      * empty class array.
-     * @throws IOException specified location not exists in file system.
+     * @throws NullPointerException specified location is null.
+     * @throws IOException          specified location not exists in file system.
      */
     public static Class<?>[] getClassesInLocation(String location) throws IOException {
-        Validation.requireNonNull(location, "Must specified location");
+        Objects.requireNonNull(location, "Must specified location");
 
         File file = new File(location);
         if (!file.exists()) {
