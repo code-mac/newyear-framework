@@ -49,7 +49,7 @@ import com.apehat.newyear.validation.Validatable;
  * (because they are from different system). At this moment, if not according
  * to the above agreement, it may cause the program to fail.
  */
-public interface Entity<T> extends Validatable<Entity<T>> {
+public interface Entity<T extends ValueObject> extends Validatable<Entity<T>> {
 
     /**
      * Returns the unique identity of current entity.
