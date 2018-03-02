@@ -16,19 +16,20 @@
 
 package com.apehat.newyear.event;
 
-import com.apehat.newyear.core.RegisterException;
 import com.apehat.newyear.util.ClassUtils;
-import com.apehat.newyear.util.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
 public final class EventBus implements EventDispatcher<Event> {
+
+    private static final Logger logger = LoggerFactory.getLogger(EventBus.class);
 
     /**
      * The single instance of class {@code EventBus}
@@ -39,6 +40,10 @@ public final class EventBus implements EventDispatcher<Event> {
      */
     private static final Object POLICY_LOCK = new Object();
     /**
+     * The REPOSITORY be used to store {@code DispatcherProvider}
+     */
+    private static final Repository REPOSITORY = new Repository();
+    /**
      * The dispatch policy be use to decision the Event.class and it's implementors
      * class. This is required, for method {@link #getDispatcher(Class)}.
      */
@@ -46,7 +51,7 @@ public final class EventBus implements EventDispatcher<Event> {
 
     static {
         /*
-         * Initialize the repository by configured providers.  These providers，
+         * Initialize the REPOSITORY by configured providers.  These providers，
          * as default implemention， support the even module running.
          * The configuration file at /META-INF/service/com.apehat.newyear.event.DispatcherProvider
          */
@@ -60,11 +65,6 @@ public final class EventBus implements EventDispatcher<Event> {
         }
     }
 
-    /**
-     * The repository be used to store {@code DispatcherProvider}
-     */
-    private final Repository repository = new Repository();
-
     private EventBus() {
         if (INSTANCE != null) {
             throw new AssertionError("Reflection unsupported.");
@@ -73,10 +73,6 @@ public final class EventBus implements EventDispatcher<Event> {
 
     public static EventBus getInstance() {
         return INSTANCE;
-    }
-
-    private static EventBusDispatchPolicy getDispatchPolicy() {
-        return dispatchPolicy == null ? new DefaultPolicy() : dispatchPolicy;
     }
 
     /**
@@ -100,29 +96,6 @@ public final class EventBus implements EventDispatcher<Event> {
         }
     }
 
-    private Repository getRepository() {
-        return repository;
-    }
-
-    public EventBus registerDefaultProvider(DispatcherProvider<EventDispatcher<Event>> provider) {
-        registerProvider(Event.class, provider);
-        return this;
-    }
-
-    public <T extends Event> EventBus registerProvider(
-            Class<T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
-        getRepository().store(eventType, provider);
-        return this;
-    }
-
-    public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType) {
-        DispatcherProvider<? extends EventDispatcher<? super T>> provider = getRepository().find(eventType);
-        if (provider == null) {
-            throw new IllegalStateException("No provider of: " + eventType);
-        }
-        return provider.get();
-    }
-
     @Override
     public void submit(Event event) {
         submitHelper(event);
@@ -130,8 +103,7 @@ public final class EventBus implements EventDispatcher<Event> {
 
     @Override
     public <U extends Event> void subscribe(Class<U> type, EventSubscriber<? super U> subscriber) {
-        EventDispatcher<? super U> dispatcher = getDispatcher(type);
-        dispatcher.subscribe(type, subscriber);
+        getDispatcher(type).subscribe(type, subscriber);
     }
 
     @Override
@@ -144,13 +116,75 @@ public final class EventBus implements EventDispatcher<Event> {
         throw new UnsupportedOperationException(getClass() + " does not support to reset.");
     }
 
+    public EventBus registerDefaultProvider(DispatcherProvider<EventDispatcher<Event>> provider) {
+        registerProvider(Event.class, provider);
+        return this;
+    }
+
+    public <T extends Event> EventBus registerProvider(
+            Class<T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
+        Objects.requireNonNull(eventType, "Must specific type token - eventType");
+        Objects.requireNonNull(provider, "Must specific provider.");
+
+        getRepository().store(eventType, provider);
+        return this;
+    }
+
+    public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType) {
+        return getDispatcher(eventType, new DefaultPolicy());
+    }
+
+    public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType, EventBusDispatchPolicy policy) {
+        Objects.requireNonNull(eventType, "Cannot find provider by null");
+
+        DispatcherProvider<? extends EventDispatcher<? super T>> provider = getRepository().find(eventType);
+
+        if (provider == null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("No provider of [{}].", eventType);
+            }
+
+            // find all superclasses and interfaces
+            Set<Class<Event>> supers = ClassUtils.getClassesWithinBounds(eventType, Event.class);
+            // supers positive sorting
+            Collection<Class<Event>> sortedSupers = ClassUtils.sort(supers, policy);
+
+            for (Class<Event> superType : sortedSupers) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Try to find the provider by [{}]", superType);
+                }
+
+                provider = getRepository().find(superType);
+                if (provider != null) {
+                    break;
+                }
+            }
+        }
+
+        // cannot found provider - try to find default provider
+        if (provider == null) {
+            provider = getRepository().find(type());
+        }
+
+        // don't have default provider - throw exception.
+        if (provider == null) {
+            throw new IllegalStateException("No provider of: " + eventType);
+        }
+
+        return provider.get();
+    }
+
+
     private <T extends Event> void submitHelper(T event) {
-        // Type safe, the class of event convert to Class<T>
-        // because, <T extends Event>
+        // Type safe, method limit is <T extends Event>
         @SuppressWarnings("unchecked") Class<T> aClass = (Class<T>) event.getClass();
         EventDispatcher<? super T> dispatcher = getDispatcher(aClass);
         assert dispatcher != null;
         dispatcher.submit(event);
+    }
+
+    private Repository getRepository() {
+        return REPOSITORY;
     }
 
     private static class DefaultPolicy implements EventBusDispatchPolicy {
@@ -174,69 +208,22 @@ public final class EventBus implements EventDispatcher<Event> {
 
     private static class Repository {
 
-        private static final Logger logger = LoggerFactory.getLogger(Repository.class);
-
-        private final Map<Class<? extends Event>, DispatcherProvider> map = new HashMap<>();
+        private final Map<Class<? extends Event>, DispatcherProvider> providers = new ConcurrentHashMap<>();
 
         private <T extends Event> void store(
-                Class<? extends T> key, DispatcherProvider<? extends EventDispatcher<? super T>> value) {
-            Objects.requireNonNull(key, "Must specified event type");
-            Objects.requireNonNull(value, "Must specified provider");
+                Class<? extends T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
+            assert eventType != null;
+            assert provider != null;
 
-            map.put(key, value);
+            providers.put(eventType, provider);
         }
 
         private <T extends Event> DispatcherProvider<? extends EventDispatcher<? super T>> find(Class<T> eventType) {
-            Objects.requireNonNull(eventType, "Cannot find provider by null");
-
-            DispatcherProvider provider = map.get(eventType);
-
-            if (provider == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("No provider of [{}].", eventType);
-                }
-
-                // find all superclasses and interfaces
-                Set<Class<Event>> supers = ClassUtils.getClassesWithinBounds(eventType, Event.class);
-                // supers positive sorting
-                Collection<Class<Event>> sortedSupers = ClassUtils.sort(supers, getDispatchPolicy());
-
-                for (Class<Event> superType : sortedSupers) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Try to find the provider by [{}]", superType);
-                    }
-
-                    provider = map.get(superType);
-                    if (provider != null) {
-                        break;
-                    }
-                }
-            }
-
-            // find default provider.
-            // if hadn't register default provider - provider be set to null
-            // can ensure by method put.
-            @SuppressWarnings("unchecked") DispatcherProvider<? extends EventDispatcher<? super T>> providerToUse =
-                    (provider == null) ? map.get(Event.class) : provider;
-            return providerToUse;
-        }
-
-        /**
-         * @param eventType the event type, that expected can submit by the
-         *                  {@code Event.EventDispatcher}, what is provided by specified provider.
-         * @param provider  the provider to be checkPermission.
-         * @throws RegisterException the event publisher of specified provider
-         *                           cannot submit the type of specified eventType.
-         */
-        private void checkDispatch(Class<? extends Event> eventType, DispatcherProvider provider) {
-            EventDispatcher<?> eventDispatcher = provider.get();
-            assert eventDispatcher != null;
-            Class<? extends EventDispatcher> aClass = eventDispatcher.getClass();
-            Class<?> parameter = ReflectionUtils.getGenericParameters(aClass, EventDispatcher.class)[0];
-            if (!parameter.isAssignableFrom(eventType)) {
-                throw new RegisterException(String.format(
-                        "%s cannot submit to %s (provided by %s)", eventType, aClass, provider.getClass()));
-            }
+            assert eventType != null;
+            // type safe, can ensure by method put
+            @SuppressWarnings("unchecked") DispatcherProvider<? extends EventDispatcher<? super T>> provider =
+                    providers.get(eventType);
+            return provider;
         }
     }
 }
