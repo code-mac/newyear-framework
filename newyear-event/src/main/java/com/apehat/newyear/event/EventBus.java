@@ -139,6 +139,11 @@ public final class EventBus implements EventDispatcher<Event> {
         return Event.class;
     }
 
+    @Override
+    public void reset() {
+        throw new UnsupportedOperationException(getClass() + " does not support to reset.");
+    }
+
     private <T extends Event> void submitHelper(T event) {
         // Type safe, the class of event convert to Class<T>
         // because, <T extends Event>
