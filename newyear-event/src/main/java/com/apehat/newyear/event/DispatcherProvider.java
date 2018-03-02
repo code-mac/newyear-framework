@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package com.apehat.newyear.event.mock;
+package com.apehat.newyear.event;
 
-import com.apehat.newyear.event.AbstractEvent;
+import java.util.function.Supplier;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public class MockEvent extends AbstractEvent {
-    private static final long serialVersionUID = 5595540395317071791L;
+public interface DispatcherProvider<T extends EventDispatcher<?>> extends Supplier<T> {
 
+    /**
+     * Returns a {@code EventDispatcher}.
+     *
+     * @return a {@code EventDispatcher}
+     */
     @Override
-    public String scope() {
-        return null;
-    }
+    T get();
 }

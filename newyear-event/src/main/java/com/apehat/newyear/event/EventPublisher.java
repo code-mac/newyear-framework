@@ -26,15 +26,18 @@ public interface EventPublisher<T extends Event> {
      * Publish an event.
      * <p>
      * Note: before call this method, must ensure already registered
-     * appropriate {@link EventDispatcherProvider}
-     * of specified event, or already registered default provider.
+     * appropriate {@link DispatcherProvider} of specified event, or
+     * already registered default provider.
      *
      * @param event the event will be published, must be instance of
      *              {@code basisEventType}
      * @throws NullPointerException  specified event is null
      * @throws IllegalStateException cannot find publisher by specified event
-     * @see SimpleEventBus#registerProvider(Class, EventDispatcherProvider)
-     * @see SimpleEventBus#registerDefaultProvider(EventDispatcherProvider)
+     * @see EventBus#registerProvider(Class, DispatcherProvider)
+     * @see EventBus#registerDefaultProvider(DispatcherProvider)
+     * @see EventBus#submit(Event)
      */
-    void publish(T event);
+    default <E extends T> void publish(E event) {
+        EventBus.getInstance().submit(event);
+    }
 }

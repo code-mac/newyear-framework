@@ -16,14 +16,11 @@
 
 package com.apehat.newyear.event;
 
-import com.apehat.newyear.core.Provider;
+import java.util.Comparator;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface EventDispatcherProvider<T extends Event> extends Provider<EventDispatcher<? super T>> {
-
-    @Override
-    EventDispatcher<? super T> getService();
+public interface EventBusDispatchPolicy extends Comparator<Class<? extends Event>> {
 }

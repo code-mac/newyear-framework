@@ -24,7 +24,11 @@ public interface EventDispatcher<T extends Event> {
 
     void submit(T event);
 
-    <U extends T> EventDispatcher<T> subscribe(Class<U> eventType, EventSubscriber<? super U> subscriber);
+    default void subscribe(EventSubscriber<? super T> subscriber) {
+        subscribe(type(), subscriber);
+    }
 
-    void reset();
+    <U extends T> void subscribe(Class<U> type, EventSubscriber<? super U> subscriber);
+
+    Class<? extends T> type();
 }
