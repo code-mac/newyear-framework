@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.apehat.newyear.event.mock;
-
-import com.apehat.newyear.event.Event;
+package com.apehat.newyear.domain.model;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface DomainEvent extends Event {
+public interface ValueObject {
+
+    @Override
+    boolean equals(Object obj);
+
+    @Override
+    int hashCode();
 }
