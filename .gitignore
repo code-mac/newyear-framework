@@ -8,9 +8,16 @@
 *.tar.gz
 *.rar
 hs_err_pid*
-/build/
+
+# Idea
 .idea
+/build/
 out/
+
+# Gradle
+.gradle
 !gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
 .gradletasknamecache
+
 newyear-feature/
