@@ -17,7 +17,8 @@
 package com.apehat.newyear.util;
 
 import com.apehat.newyear.core.NullArgumentException;
-import com.apehat.newyear.lang.Nullable;
+import com.apehat.newyear.validation.annotation.Nullable;
+import com.apehat.newyear.validation.Validation;
 
 import java.io.File;
 import java.io.FileNotFoundException;

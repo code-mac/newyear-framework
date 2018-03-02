@@ -23,8 +23,4 @@ package com.apehat.newyear.core;
 public interface Subscriber<T> {
 
     void handle(T content);
-
-    default SubscribeScope subscribeTo() {
-        return null;
-    }
 }

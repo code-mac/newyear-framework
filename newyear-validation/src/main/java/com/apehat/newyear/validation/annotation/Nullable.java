@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package com.apehat.newyear.core;
+package com.apehat.newyear.validation.annotation;
 
-import com.apehat.newyear.lang.NonNull;
+import java.lang.annotation.*;
 
 /**
  * @author hanpengfei
  * @since 1.0
  */
-public interface Provider<T> {
+@Documented
+@Inherited
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+public @interface Nullable {
 
     /**
-     * Returns a service of this provider.
+     * Returns the description of be null condition.
      *
-     * @return a service
+     * @return the description
      */
-    @NonNull
-    T getService();
+    String value() default "";
 }

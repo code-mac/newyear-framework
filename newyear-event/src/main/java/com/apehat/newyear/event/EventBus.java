@@ -18,7 +18,7 @@ package com.apehat.newyear.event;
 
 import com.apehat.newyear.util.ClassUtils;
 import com.apehat.newyear.util.GenericUtils;
-import com.apehat.newyear.util.Validation;
+import com.apehat.newyear.validation.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

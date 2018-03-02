@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apehat.newyear.core;
+package com.apehat.newyear.validation.exception;
 
 /**
  * @author hanpengfei

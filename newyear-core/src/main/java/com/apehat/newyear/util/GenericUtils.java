@@ -16,7 +16,8 @@
 
 package com.apehat.newyear.util;
 
-import com.apehat.newyear.lang.Nullable;
+import com.apehat.newyear.validation.annotation.Nullable;
+import com.apehat.newyear.validation.Validation;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

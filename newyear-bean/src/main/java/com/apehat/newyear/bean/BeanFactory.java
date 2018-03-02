@@ -16,7 +16,7 @@
 
 package com.apehat.newyear.bean;
 
-import com.apehat.newyear.core.IllegalConflictException;
+import com.apehat.newyear.validation.exception.IllegalConflictException;
 
 /**
  * @author hanpengfei

@@ -23,6 +23,7 @@ include 'newyear-web'
 include 'newyear-annotation'
 include 'newyear-event'
 include 'newyear-feature'
+include 'newyear-validation'
 
 include 'buildSrc'
 rootProject.children.find { it.name == 'buildSrc' }.name = 'newyear-build-src'

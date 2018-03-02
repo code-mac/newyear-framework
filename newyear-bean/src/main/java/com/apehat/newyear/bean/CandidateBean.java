@@ -16,7 +16,7 @@
 
 package com.apehat.newyear.bean;
 
-import com.apehat.newyear.util.Validation;
+import com.apehat.newyear.validation.Validation;
 
 import java.lang.reflect.Modifier;
 

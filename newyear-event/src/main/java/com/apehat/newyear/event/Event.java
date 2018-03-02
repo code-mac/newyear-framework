@@ -16,7 +16,7 @@
 
 package com.apehat.newyear.event;
 
-import com.apehat.newyear.lang.NonNull;
+import com.apehat.newyear.validation.annotation.NonNull;
 
 import java.io.Serializable;
 

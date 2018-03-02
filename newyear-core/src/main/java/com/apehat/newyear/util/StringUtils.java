@@ -16,6 +16,8 @@
 
 package com.apehat.newyear.util;
 
+import com.apehat.newyear.validation.Validation;
+
 import java.util.regex.Pattern;
 
 /**

@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-package com.apehat.newyear.lang;
-
-import java.lang.annotation.*;
-
-/**
- * @author hanpengfei
- * @since 1.0
- */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-public @interface NotEmpty {
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }

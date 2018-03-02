@@ -17,6 +17,7 @@
 package com.apehat.newyear.util;
 
 import com.apehat.newyear.protocol.classpath.Handler;
+import com.apehat.newyear.validation.Validation;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

@@ -16,8 +16,8 @@
 
 package com.apehat.newyear.core.io;
 
-import com.apehat.newyear.lang.NonNull;
-import com.apehat.newyear.lang.Nullable;
+import com.apehat.newyear.validation.annotation.NonNull;
+import com.apehat.newyear.validation.annotation.Nullable;
 import com.apehat.newyear.util.ResourceUtils;
 
 import java.io.*;

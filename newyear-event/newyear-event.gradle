@@ -16,5 +16,6 @@
 
 dependencies {
     compile(project(":newyear-core"))
+    compile(project(":newyear-validation"))
     testCompile('org.testng:testng:6.14.2')
 }

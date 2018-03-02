@@ -18,7 +18,7 @@ package com.apehat.newyear.event.annotation;
 
 import com.apehat.newyear.event.Event;
 import com.apehat.newyear.event.EventSubscriber;
-import com.apehat.newyear.lang.NonNull;
+import com.apehat.newyear.validation.annotation.NonNull;
 
 import java.lang.annotation.*;
 

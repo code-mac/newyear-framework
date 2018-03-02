@@ -16,7 +16,7 @@
 
 package com.apehat.newyear.bean.annotation;
 
-import com.apehat.newyear.lang.NonNull;
+import com.apehat.newyear.validation.annotation.NonNull;
 
 import java.lang.annotation.*;
 

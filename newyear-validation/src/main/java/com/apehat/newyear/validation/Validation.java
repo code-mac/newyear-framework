@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.apehat.newyear.util;
+package com.apehat.newyear.validation;
 
-import com.apehat.newyear.core.IllegalConflictException;
+import com.apehat.newyear.validation.exception.IllegalConflictException;
 
 import java.util.Objects;
 
