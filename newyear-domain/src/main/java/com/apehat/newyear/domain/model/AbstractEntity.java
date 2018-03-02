@@ -25,7 +25,7 @@ import com.apehat.newyear.validation.Validator;
  * @author hanpengfei
  * @since 1.0
  */
-public abstract class AbstractEntity<T> implements Entity<T> {
+public abstract class AbstractEntity<T extends ValueObject> implements Entity<T> {
 
     private final T id;
 
