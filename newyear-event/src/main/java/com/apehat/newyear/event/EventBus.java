@@ -96,7 +96,7 @@ public final class EventBus implements EventDispatcher<Event> {
             if (EventBus.dispatchPolicy != null) {
                 throw new Error("Policy already defined.");
             }
-            EventBus.dispatchPolicy = dispatchPolicy;
+            EventBus.dispatchPolicy = policy;
         }
     }
 
