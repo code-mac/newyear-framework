@@ -102,24 +102,27 @@ public class ResourceUtils {
     public static URL getURL(String location) throws MalformedURLException {
         Objects.requireNonNull(location, "Must specify resource location");
 
-        URL url = null;
+        URL url;
 
         try {
             url = new URL(location);
         } catch (MalformedURLException e) {
-            if (!location.contains(PATH_SEPARATOR)) {
+            // try to get by package name (or package path)
+            String path = location;
+            if (!path.contains(PATH_SEPARATOR)) {
                 // is a package name - try to get by ClassLoader
-                String path = location.replace(".", PATH_SEPARATOR);
-
-                ClassLoader clToUse = ClassUtils.getDefaultClassLoader();
-                if (clToUse == null) {
-                    clToUse = ResourceUtils.class.getClassLoader();
-                }
-
-                url = clToUse.getResource(path);
-                // if get success, need to convert to jar url - ClassLoader already do this
-                // but need try to convert to class path url
+                path = path.replace(".", PATH_SEPARATOR);
             }
+            path = StringUtils.clearPath(path);
+
+            ClassLoader clToUse = ClassUtils.getDefaultClassLoader();
+            if (clToUse == null) {
+                clToUse = ResourceUtils.class.getClassLoader();
+            }
+
+            url = clToUse.getResource(path);
+            // if get success, need not to convert to jar url - ClassLoader already do this
+            // but need try to convert to class path url
 
             if (url == null) {
                 // if failed at there, will throw exception
@@ -144,6 +147,10 @@ public class ResourceUtils {
     }
 
     private static URL toClassPathURL(URL url) throws MalformedURLException {
+        if (isClassPathURL(url)) {
+            return url;
+        }
+
         String s = url.toString();
 
         // ensure the specified URL is in class path
@@ -282,10 +289,11 @@ public class ResourceUtils {
      */
     public static boolean isClassPathURL(URL url) {
         String us = url.toString();
-        if (URL_PROTOCOL_CLASSPATH.equals(url.getProtocol()) || EnvUtils.isInClassPath(us)) {
+        if (URL_PROTOCOL_CLASSPATH.equals(url.getProtocol())) {
             return true;
         }
-        String[] protocols = us.substring(us.indexOf(PATH_SEPARATOR)).split(PROTOCOL_PATH_SEPARATOR);
+        String ps = us.substring(0, us.indexOf(PATH_SEPARATOR));
+        String[] protocols = ps.split(PROTOCOL_PATH_SEPARATOR);
         for (int i = 1; i < protocols.length; ++i) {
             if (URL_PROTOCOL_CLASSPATH.equals(protocols[i])) {
                 return true;
@@ -308,12 +316,16 @@ public class ResourceUtils {
     public static String getRealPath(URL url) {
         String us = url.toString();
 
-        Validation.requireFalse(
-                (isJarURL(url) && !us.endsWith(JAR_URL_SEPARATOR)) ||
-                        (isJarFileURL(url) && us.endsWith(JAR_EXTENSION)),
-                "Does not support to resolve jar URL (or jar file URL) with entry part: [%s]", url);
+        Validation.requireFalse(isJarURL(url) && !us.endsWith(JAR_URL_SEPARATOR),
+                "Does not support to resolve jar URL with entry part: [%s]", url);
 
+        // remove all protocols
         String path = us.substring(us.indexOf(PATH_SEPARATOR));
+
+        if (isJarURL(url)) {
+            // remove jar url separator
+            path = path.substring(0, path.length() - JAR_URL_SEPARATOR.length());
+        }
 
         if (path.startsWith("//")) {
             // is a network URL
@@ -323,7 +335,7 @@ public class ResourceUtils {
         } else if (EnvUtils.isWindows()) {
             path = path.replace(PATH_SEPARATOR, File.separator);
         }
-        return path;
+        return decode(path);
     }
 
     /**
