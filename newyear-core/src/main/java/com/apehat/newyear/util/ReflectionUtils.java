@@ -56,8 +56,5 @@ public class ReflectionUtils {
         return null;
     }
 
-    public static boolean canInstantiated(Class<?> aClass) {
-        return !aClass.isInterface() && !Modifier.isAbstract(aClass.getModifiers())
-                && !aClass.isAnnotation() && aClass.isEnum();
-    }
+
 }

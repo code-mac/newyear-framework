@@ -113,6 +113,18 @@ public class ClassUtils {
     }
 
     /**
+     * Determine the specified class can instantiated.
+     * i.e. the specified class isn't interface, abstract class, annotation or enum
+     *
+     * @param aClass the class to check
+     * @return true, the class can instantiated; otherwise, false.
+     */
+    public static boolean canInstantiated(Class<?> aClass) {
+        return !aClass.isInterface() && !Modifier.isAbstract(aClass.getModifiers())
+                && !aClass.isAnnotation() && aClass.isEnum();
+    }
+
+    /**
      * Construct a instance with-non argument of specified class.
      *
      * @param aClass the class to construct.
@@ -183,7 +195,8 @@ public class ClassUtils {
         Objects.requireNonNull(lower, "Must specified a class");
 
         if (upper == null) {
-            // After type erasures, upper is Class<Object>, So Object.class always can safety convert
+            // Type safe, after type erasures, upper is Class<Object>
+            // so Object.class always can safety convert
             //noinspection unchecked
             upper = (Class<T>) Object.class;
         }
@@ -192,7 +205,7 @@ public class ClassUtils {
 
         Class<?> currentSuperclass = lower.getSuperclass();
         while (subOf(currentSuperclass, upper)) {
-            // the current superclass is sub of upper. So, at there can safety convert
+            // Type safe, the current superclass is sub of upper.
             @SuppressWarnings("unchecked") Class<T> inBounds = (Class<T>) currentSuperclass;
             superClasses.add(inBounds);
             currentSuperclass = currentSuperclass.getSuperclass();
