@@ -16,8 +16,8 @@
 
 package com.apehat.newyear.util;
 
-import com.apehat.newyear.validation.annotation.Nullable;
 import com.apehat.newyear.validation.Validation;
+import com.apehat.newyear.validation.annotation.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -53,7 +53,7 @@ public class GenericUtils {
         Objects.requireNonNull(aClass, "Must specified class");
         Objects.requireNonNull(aClass, "Must specified a generic type");
 
-        Validation.requireTrue(nonGenericType(aClass), "%s isn't generic type.", aGeneric);
+        Validation.requireTrue(isGenericType(aClass), "%s isn't generic type.", aGeneric);
 
         ParameterizedType pt = getParameterizedTypeOf(aClass, aGeneric);
 
@@ -90,8 +90,8 @@ public class GenericUtils {
         return parameters;
     }
 
-    private static boolean nonGenericType(Class<?> aClass) {
-        return aClass.getTypeParameters().length == 0;
+    private static boolean isGenericType(Class<?> aClass) {
+        return aClass.getTypeParameters().length > 0;
     }
 
     private static ParameterizedType findByInterface(Class<?> aClass, Class<?> aGeneric) {
@@ -160,10 +160,7 @@ public class GenericUtils {
         Objects.requireNonNull(aClass, "Must specified subclass");
         Objects.requireNonNull(aGeneric, "Must specified super generic");
 
-
-        if (nonGenericType(aGeneric)) {
-            throw new IllegalArgumentException(aGeneric + " isn't generic");
-        }
+        Validation.requireTrue(isGenericType(aClass), "[%s] isn't generic type.", aClass);
 
         ParameterizedType pt = findByClass(aClass, aGeneric);
 
