@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
  */
 public class StringUtils {
 
-    private static final Pattern GENERIC_TYPE_NAME_PATTERN = Pattern.compile("<.*>");
 
     private StringUtils() {
     }
@@ -39,8 +38,11 @@ public class StringUtils {
         return str != null && !str.isEmpty();
     }
 
-    public static String nonGenericTypeName(String name) {
-        Validation.requireNonNull(name, "Must specified generic type name.");
-        return GENERIC_TYPE_NAME_PATTERN.matcher(name).replaceAll("");
+
+    public static String clearPath(String path) {
+        if (path.startsWith("/")) {
+            return path.substring(1);
+        }
+        return path;
     }
 }

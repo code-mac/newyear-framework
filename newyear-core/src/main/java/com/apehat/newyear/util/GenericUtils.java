@@ -25,6 +25,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * @author hanpengfei
@@ -67,7 +68,7 @@ public class GenericUtils {
                 for (Type type : bounds) {
                     String typeName = type.getTypeName();
                     // remove generic symbol
-                    String className = StringUtils.nonGenericTypeName(typeName);
+                    String className = nonGenericTypeName(typeName);
                     Class<?> clazz = ClassUtils.forName(className);
                     assert clazz != null;
                     list.add(clazz);
@@ -111,7 +112,7 @@ public class GenericUtils {
                     String typeName = type.getTypeName();
 
                     if (Validation.equalsOne(interfaceName, typeName,
-                            StringUtils.nonGenericTypeName(typeName)) &&
+                            nonGenericTypeName(typeName)) &&
                             type instanceof ParameterizedType) {
                         return (ParameterizedType) type;
                     }
@@ -127,6 +128,13 @@ public class GenericUtils {
             }
         }
         return pt;
+    }
+
+    private static final Pattern GENERIC_TYPE_NAME_PATTERN = Pattern.compile("<.*>");
+
+    private static String nonGenericTypeName(String name) {
+        Validation.requireNonNull(name, "Must specified generic type name.");
+        return GENERIC_TYPE_NAME_PATTERN.matcher(name).replaceAll("");
     }
 
     private static ParameterizedType findByClass(Class<?> aClass, Class<?> aGeneric) {
