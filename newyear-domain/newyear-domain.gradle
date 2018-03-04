@@ -17,5 +17,7 @@
 dependencies {
     compile(project(":newyear-core"))
     compile(project(":newyear-event"))
+    compile(project(":newyear-validation"))
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
