@@ -27,10 +27,48 @@ import java.net.URL;
 public class ResourceUtilsTest {
 
     @Test
-    public void testGetURL() throws Exception {
+    public void testGetURLByPackageName() throws Exception {
+        String location = "com.apehat.newyear.util";
+        URL url = ResourceUtils.getURL(location);
+
+        assert ResourceUtils.isClassPathURL(url);
+    }
+
+    @Test
+    public void testGetURLByPackagePath() throws Exception {
+        String location = "com/apehat/newyear/util";
+        URL url = ResourceUtils.getURL(location);
+
+        assert ResourceUtils.isClassPathURL(url);
+    }
+
+    @Test
+    public void testGetURLByJarFile() throws Exception {
+        String location = "test.jar";
+        URL url = ResourceUtils.getURL(location);
+
+        assert ResourceUtils.isJarURL(url);
+    }
+
+    @Test
+    public void testGetURLByAbsolutePath() throws Exception {
         String rt = "/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar";
         URL url = ResourceUtils.getURL(rt);
-        System.out.println(url);
+
+        assert ResourceUtils.isJarURL(url);
+        assert ResourceUtils.isClassPathURL(url);
+    }
+
+    @Test
+    public void testToJarURL() throws Exception {
+    }
+
+    @Test
+    public void testIsFileURL() throws Exception {
+    }
+
+    @Test
+    public void testIsJarFile() throws Exception {
     }
 
     @Test
@@ -38,14 +76,47 @@ public class ResourceUtilsTest {
     }
 
     @Test
-    public void testIsWarURL() throws Exception {
-    }
-
-    @Test
     public void testIsJarFileURL() throws Exception {
     }
 
     @Test
-    public void testIsWarFileURL() throws Exception {
+    public void testExpandJarURL() throws Exception {
+    }
+
+    @Test
+    public void testIsClassPathURL() throws Exception {
+    }
+
+    @Test
+    public void testGetRealPath() throws Exception {
+        String rt = "/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar";
+        URL url = ResourceUtils.getURL(rt);
+        String realPath = ResourceUtils.getRealPath(url);
+
+        assert rt.equals(realPath);
+    }
+
+    @Test
+    public void testEncode() throws Exception {
+    }
+
+    @Test
+    public void testEncodeURL() throws Exception {
+    }
+
+    @Test
+    public void testDecode() throws Exception {
+    }
+
+    @Test
+    public void testDecodeURL() throws Exception {
+    }
+
+    @Test
+    public void testGetFile() throws Exception {
+    }
+
+    @Test
+    public void testUseCachesIfNecessary() throws Exception {
     }
 }

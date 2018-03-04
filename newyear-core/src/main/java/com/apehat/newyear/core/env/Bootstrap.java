@@ -85,7 +85,7 @@ public final class Bootstrap {
                 for (Class<?> aClass : classes) {
                     @SuppressWarnings("unchecked") Set<Class<?>> supers
                             = (Set<Class<?>>) ClassUtils.getClasses(aClass);
-                    if (supers.contains(Plugin.class) && ReflectionUtils.canInstantiated(aClass)) {
+                    if (supers.contains(Plugin.class) && ClassUtils.canInstantiated(aClass)) {
                         //noinspection unchecked
                         pluginClasses.add((Class<? extends Plugin>) aClass);
                     }
@@ -97,7 +97,7 @@ public final class Bootstrap {
 
         ArrayList<Plugin> plugins = new ArrayList<>();
         for (Class<? extends Plugin> pluginClass : pluginClasses) {
-            if (ReflectionUtils.canInstantiated(pluginClass)) {
+            if (ClassUtils.canInstantiated(pluginClass)) {
                 try {
                     plugins.add(ClassUtils.newInstance(pluginClass));
                 } catch (NoSuchMethodException e) {

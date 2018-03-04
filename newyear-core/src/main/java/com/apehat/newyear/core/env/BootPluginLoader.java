@@ -48,7 +48,7 @@ public final class BootPluginLoader implements PluginLoader {
                 URL url = resources.nextElement();
             }
         } catch (IOException e) {
-            throw new BootException();
+            throw new InitializationException();
         }
     }
 

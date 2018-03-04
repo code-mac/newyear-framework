@@ -27,7 +27,7 @@ public interface Dispatcher<T, K, V extends Subscriber<? extends T>> {
 
     void submit(T content);
 
-    Dispatcher subscribe(K contentType, V subscriber);
+    void subscribe(K contentType, V subscriber);
 
     void reset();
 }
