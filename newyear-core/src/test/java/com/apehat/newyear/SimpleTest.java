@@ -41,7 +41,7 @@ public class SimpleTest {
     }
 
     @Test
-    public void testExpand() throws MalformedURLException, URISyntaxException {
+    public void testExpand() throws MalformedURLException {
         String rt = "jar:classpath:/Applications/IntelliJ%20IDEA.app/Contents/lib/idea_rt.jar!/";
         URL url = new URL(null, rt, new Handler());
         System.out.println(url);
@@ -55,7 +55,7 @@ public class SimpleTest {
     }
 
     @Test
-    public void testGetResource() throws Exception {
+    public void testGetResource() {
         ClassLoader cl = ClassUtils.getDefaultClassLoader();
 
         URL url = cl.getResource("com/apehat/newyear/core/annotation/Starter.class");
@@ -69,7 +69,7 @@ public class SimpleTest {
     }
 
     @Test
-    public void testIsFile() throws Exception {
+    public void testIsFile() {
         File file = new File("/123.txt");
         System.out.println(file.exists());
         System.out.println(file.isFile());

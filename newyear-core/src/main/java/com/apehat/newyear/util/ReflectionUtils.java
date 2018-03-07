@@ -16,8 +16,6 @@
 
 package com.apehat.newyear.util;
 
-import java.lang.reflect.Modifier;
-
 /**
  * @author hanpengfei
  * @since 1.0

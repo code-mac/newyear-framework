@@ -60,31 +60,31 @@ public class ResourceUtilsTest {
     }
 
     @Test
-    public void testToJarURL() throws Exception {
+    public void testToJarURL() {
     }
 
     @Test
-    public void testIsFileURL() throws Exception {
+    public void testIsFileURL() {
     }
 
     @Test
-    public void testIsJarFile() throws Exception {
+    public void testIsJarFile() {
     }
 
     @Test
-    public void testIsJarURL() throws Exception {
+    public void testIsJarURL() {
     }
 
     @Test
-    public void testIsJarFileURL() throws Exception {
+    public void testIsJarFileURL() {
     }
 
     @Test
-    public void testExpandJarURL() throws Exception {
+    public void testExpandJarURL() {
     }
 
     @Test
-    public void testIsClassPathURL() throws Exception {
+    public void testIsClassPathURL() {
     }
 
     @Test
@@ -97,26 +97,26 @@ public class ResourceUtilsTest {
     }
 
     @Test
-    public void testEncode() throws Exception {
+    public void testEncode() {
     }
 
     @Test
-    public void testEncodeURL() throws Exception {
+    public void testEncodeURL() {
     }
 
     @Test
-    public void testDecode() throws Exception {
+    public void testDecode() {
     }
 
     @Test
-    public void testDecodeURL() throws Exception {
+    public void testDecodeURL() {
     }
 
     @Test
-    public void testGetFile() throws Exception {
+    public void testGetFile() {
     }
 
     @Test
-    public void testUseCachesIfNecessary() throws Exception {
+    public void testUseCachesIfNecessary() {
     }
 }

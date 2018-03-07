@@ -36,8 +36,7 @@ public final class DispatcherServlet extends HttpServlet
     }
 
     @Override
-    public Dispatcher subscribe(String contentType, HttpServletRequestSubscriber subscriber) {
-        return null;
+    public void subscribe(String contentType, HttpServletRequestSubscriber subscriber) {
     }
 
     @Override

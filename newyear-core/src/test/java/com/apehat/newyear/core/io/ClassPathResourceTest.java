@@ -44,33 +44,33 @@ public class ClassPathResourceTest {
     }
 
     @Test
-    public void testOf() throws Exception {
+    public void testOf() {
         Resource resource = ClassPathResource.of(fileURL);
         boolean exists = resource.exists();
         System.out.println(exists);
     }
 
     @Test
-    public void testOf1() throws Exception {
+    public void testOf1() {
     }
 
     @Test
-    public void testGetPackageName() throws Exception {
+    public void testGetPackageName() {
     }
 
     @Test
-    public void testIsClassFile() throws Exception {
+    public void testIsClassFile() {
     }
 
     @Test
-    public void testGetClassPath() throws Exception {
+    public void testGetClassPath() {
     }
 
     @Test
-    public void testGetURI() throws Exception {
+    public void testGetURI() {
     }
 
     @Test
-    public void testGetParent() throws Exception {
+    public void testGetParent() {
     }
 }

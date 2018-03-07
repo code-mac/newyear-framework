@@ -16,9 +16,9 @@
 
 package com.apehat.newyear.core.io;
 
+import com.apehat.newyear.util.ResourceUtils;
 import com.apehat.newyear.validation.annotation.NonNull;
 import com.apehat.newyear.validation.annotation.Nullable;
-import com.apehat.newyear.util.ResourceUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -207,7 +207,8 @@ public class FileSystemResource extends AbstractResource {
     @Override
     public InputStream getInputStream() throws IOException {
         if (!exists()) {
-            throw new FileNotFoundException("Cannot get input stream of " + getName() + ", because it not exists");
+            throw new FileNotFoundException("Cannot get input stream of "
+                    + getName() + ", because it not exists");
         }
         return new FileInputStream(getFile());
     }

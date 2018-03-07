@@ -19,6 +19,7 @@ package com.apehat.newyear.core.io;
 import com.apehat.newyear.util.IOUtils;
 import com.apehat.newyear.util.ResourceUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -62,6 +63,17 @@ public interface Resource extends InputStreamSource {
     Resource getParent();
 
     /**
+     * Returns the children resources, if the current resource have children. Or
+     * 0 length resource array, if the current does not have any children.
+     *
+     * @return the children of the current resource.
+     * @throws IllegalStateException if the current resource cannot expand.
+     */
+    default Resource[] expand() {
+        return new Resource[0];
+    }
+
+    /**
      * Determine whether the current resource is exists.
      *
      * @return true, current resource is exists; otherwise, false.
@@ -69,7 +81,8 @@ public interface Resource extends InputStreamSource {
     default boolean exists() {
         try {
             URLConnection con = getURL().openConnection();
-            HttpURLConnection httpCon = (con instanceof HttpURLConnection) ? (HttpURLConnection) con : null;
+            HttpURLConnection httpCon = (con instanceof HttpURLConnection) ?
+                    (HttpURLConnection) con : null;
 
             if (httpCon != null) {
                 int responseCode = httpCon.getResponseCode();
@@ -95,7 +108,8 @@ public interface Resource extends InputStreamSource {
      * the current resource {@code isLocal()}, will return the name of current
      * file of directory.
      *
-     * @return the name of current resource.
+     * @return the name of current resource, or mepty string if current resource
+     * don't have name.
      */
     String getName();
 
@@ -124,18 +138,19 @@ public interface Resource extends InputStreamSource {
      * Returns the input stream of the current resource.
      *
      * @return the input stream of the current resource.
-     * @throws IOException the current resource is not
-     *                     exists in file system, or I/O
-     *                     Exception occur.
+     * @throws IOException the current resource is not exists,
+     *                     or if an I/O exception occurs.
      */
     @Override
     default InputStream getInputStream() throws IOException {
         if (!exists()) {
-            throw new IOException("Cannot return the input stream of "
+            throw new FileNotFoundException("Cannot return the input stream of "
                     + getName() + ", because it's not exists.");
         }
+
         URLConnection con = getURL().openConnection();
         ResourceUtils.useCachesIfNecessary(con);
+
         try {
             return con.getInputStream();
         } finally {

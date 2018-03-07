@@ -30,6 +30,7 @@ public interface Event extends Serializable {
 
     /**
      * Returns the occurred time millis of event.
+     * <p>
      * If current is extended form others. This value should same as it's
      * parent.
      *

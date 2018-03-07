@@ -90,7 +90,7 @@ public class URLResource implements InputStreamSource {
         return url;
     }
 
-    public File getFile() throws IOException {
+    public File getFile() {
         return ResourceUtils.getFile(getURL());
     }
 }

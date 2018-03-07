@@ -151,14 +151,26 @@ public final class EventBus implements EventDispatcher<Event> {
         throw new UnsupportedOperationException(getClass() + " does not support to reset.");
     }
 
+    /**
+     * Register provider by {@code Event.class} as default provider. The provider must can provide
+     * a {@code EventDispatcher}, that can dispatch all {@code Event}.
+     * <p>
+     * The default {@code DispatcherProvider} will be used to provide a {@code EventDispatcher}, when
+     * cannot {@code getDispatcher}, will get the dispatcher by this provider.
+     *
+     * @param provider the provider to registered
+     * @return this
+     * @throws NullPointerException     specified provider is null
+     * @throws IllegalArgumentException default {@code EventDispatcher} already be registered
+     * @see #registerProvider(Class, DispatcherProvider)
+     */
     public EventBus registerDefaultProvider(DispatcherProvider<EventDispatcher<Event>> provider) {
         registerProvider(Event.class, provider);
         return this;
     }
 
     /**
-     * Register the {@code provider} by {@code eventType}. If provider already exists, will
-     * throw {@link IllegalArgumentException}.
+     * Register the {@code provider} by {@code eventType}.
      *
      * @param eventType the type token, as key.
      * @param provider  the provider as value.
@@ -215,6 +227,7 @@ public final class EventBus implements EventDispatcher<Event> {
      * @return a dispatcher.
      * @throws NullPointerException  specified event type of policy is null
      * @throws IllegalStateException cannot found appropriate dispatcher.
+     * @see #registerDefaultProvider(DispatcherProvider)
      */
     public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType) {
         return getDispatcher(eventType, new DefaultPolicy());
