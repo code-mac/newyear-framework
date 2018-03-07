@@ -21,3 +21,23 @@ gradle/wrapper/gradle-wrapper.properties
 .gradletasknamecache
 
 newyear-feature/
+.DS_Store
+buildSrc/build/tmp/
+buildSrc/src/
+newyear-annotation/src/main/resources/
+newyear-annotation/src/test/
+newyear-aop/src/
+newyear-bean/src/main/resources/
+newyear-bean/src/test/
+newyear-context/src/main/resources/
+newyear-context/src/test/
+newyear-core/src/main/resources/
+newyear-domain/src/main/resources/
+newyear-domain/src/test/
+newyear-event/src/test/
+newyear-validation/src/main/resources/
+newyear-validation/src/test/
+newyear-web/src/main/resources/
+newyear-web/src/test/
+src/main/
+src/test/resources/
