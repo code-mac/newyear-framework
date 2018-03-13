@@ -33,6 +33,8 @@ import java.util.regex.Pattern;
  */
 public class GenericUtils {
 
+    private static final Pattern GENERIC_TYPE_NAME_PATTERN = Pattern.compile("<.*>");
+
     private GenericUtils() {
     }
 
@@ -129,8 +131,6 @@ public class GenericUtils {
         }
         return pt;
     }
-
-    private static final Pattern GENERIC_TYPE_NAME_PATTERN = Pattern.compile("<.*>");
 
     private static String nonGenericTypeName(String name) {
         Validation.requireNonNull(name, "Must specified generic type name.");

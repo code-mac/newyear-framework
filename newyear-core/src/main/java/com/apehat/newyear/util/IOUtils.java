@@ -19,6 +19,7 @@ package com.apehat.newyear.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  * @author hanpengfei
@@ -26,9 +27,40 @@ import java.io.InputStream;
  */
 public class IOUtils {
 
-    private static final int DEFAULT_BUFFER_SIZE = 4096;
+    private static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    private static final int MAX_BUFFER_SIZE = Integer.MAX_VALUE - 8;
 
     private IOUtils() {
+    }
+
+    public static byte[] readAllBytes(InputStream is) throws IOException {
+        byte[] buf = new byte[DEFAULT_BUFFER_SIZE];
+        int capacity = buf.length;
+        int nread = 0;
+        int n;
+        for (; ; ) {
+            // read to EOF which may read more or less than initial buffer size
+            while ((n = is.read(buf, nread, capacity - nread)) > 0) {
+                nread += n;
+            }
+
+            // if the last call to read returned -1, then we're done
+            if (n < 0) {
+                break;
+            }
+
+            // need to allocate a larger buffer
+            if (capacity <= MAX_BUFFER_SIZE - capacity) {
+                capacity = capacity << 1;
+            } else {
+                if (capacity == MAX_BUFFER_SIZE)
+                    throw new OutOfMemoryError("Required array size too large");
+                capacity = MAX_BUFFER_SIZE;
+            }
+            buf = Arrays.copyOf(buf, capacity);
+        }
+        return (capacity == nread) ? buf : Arrays.copyOf(buf, nread);
     }
 
     public static byte[] toByteArray(InputStream in) throws IOException {

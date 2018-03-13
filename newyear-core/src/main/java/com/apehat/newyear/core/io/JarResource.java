@@ -88,10 +88,10 @@ public class JarResource extends AbstractResource {
     }
 
     /**
-     * Determine whether the current resource is a jar file.
+     * Determine whether the current res is a jar file.
      *
-     * @return true, if current resource is a jar file, Otherwise, false.
-     * @throws IllegalStateException if the current resource not exits.
+     * @return true, if current res is a jar file, Otherwise, false.
+     * @throws IllegalStateException if the current res not exits.
      */
     public boolean isJarFile() {
         return jarFile != null;

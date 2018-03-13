@@ -23,6 +23,9 @@ import com.apehat.newyear.validation.annotation.NonNull;
 import java.lang.annotation.*;
 
 /**
+ * Subscribe events by defined {@code EventSubscriber}s. The subscriber must
+ * have an no-parameter constructor.
+ *
  * @author hanpengfei
  * @since 1.0
  */

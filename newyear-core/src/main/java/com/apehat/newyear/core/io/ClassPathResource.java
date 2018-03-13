@@ -46,9 +46,9 @@ public class ClassPathResource extends FileSystemResource {
     }
 
     /**
-     * Create a class path resource by specified uri.
+     * Create a class path res by specified uri.
      *
-     * @param uri the uri to be used create a class path resource
+     * @param uri the uri to be used create a class path res
      * @return a class path instance
      * @throws MalformedURLException    If a protocol handler for the URL could not
      *                                  be found, or if some other error occurred
@@ -63,9 +63,9 @@ public class ClassPathResource extends FileSystemResource {
     }
 
     /**
-     * Create a class path resource by specified url.
+     * Create a class path res by specified url.
      *
-     * @param url the url to be used create a class path resource
+     * @param url the url to be used create a class path res
      * @return a class path instance
      * @throws IllegalArgumentException the specified url does not belong to any class path.
      */
@@ -76,14 +76,14 @@ public class ClassPathResource extends FileSystemResource {
     }
 
     /**
-     * Returns the package name of the current resource, if the current
-     * resource {@code isClassFile()}. Before call the method, you should
-     * call {@link #isClassFile()}, ensure the current resource is a class
-     * file. Otherwise, if the current resource sin't class file, will throw
+     * Returns the package name of the current res, if the current
+     * res {@code isClassFile()}. Before call the method, you should
+     * call {@link #isClassFile()}, ensure the current res is a class
+     * file. Otherwise, if the current res sin't class file, will throw
      * {@link IllegalStateException}.
      *
      * @return the package name of current class file.
-     * @throws IllegalStateException the current resource isn't class file.
+     * @throws IllegalStateException the current res isn't class file.
      * @see #isClassFile()
      */
     public String getPackageName() {
@@ -111,9 +111,9 @@ public class ClassPathResource extends FileSystemResource {
     }
 
     /**
-     * Determine whether the current resource is a class file.
+     * Determine whether the current res is a class file.
      *
-     * @return true, the current resource is a class file;
+     * @return true, the current res is a class file;
      * otherwise, false.
      */
     public boolean isClassFile() {
@@ -121,9 +121,9 @@ public class ClassPathResource extends FileSystemResource {
     }
 
     /**
-     * Returns the classpath of the current resource.
+     * Returns the classpath of the current res.
      *
-     * @return the classpath of current resource
+     * @return the classpath of current res
      */
     @NonNull
     public String getClassPath() {
@@ -139,14 +139,14 @@ public class ClassPathResource extends FileSystemResource {
     }
 
     /**
-     * Returns the parent resource of the current resource. If the parent resource still
-     * in the class path of the current resource, will return a {@code ClassPathResource}
+     * Returns the parent res of the current res. If the parent res still
+     * in the class path of the current res, will return a {@code ClassPathResource}
      * instance, otherwise, will return a {@code FileSystemResource} instance.
      * <p>
      * This method in current class will not return a null, because the class path must not
      * is like "/" or "C:\".
      *
-     * @return the parent resource of current resource.
+     * @return the parent res of current res.
      */
     @Override
     public FileSystemResource getParent() {

@@ -32,7 +32,7 @@ import java.net.URL;
 public class FileSystemResource extends AbstractResource {
 
     /**
-     * The url of the current resource.
+     * The url of the current res.
      */
     @NonNull
     private final URL url;
@@ -41,13 +41,13 @@ public class FileSystemResource extends AbstractResource {
     private final URI uri;
 
     /**
-     * The source of the current resource.
+     * The source of the current res.
      */
     @Nullable
     private final File file;
 
     /**
-     * The absolute path of the current resource
+     * The absolute path of the current res
      */
     @Nullable
     private final String absolutePath;
@@ -71,9 +71,9 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Returns the absolute path of the current resource.
+     * Returns the absolute path of the current res.
      *
-     * @return the absolute path of the current resource.
+     * @return the absolute path of the current res.
      */
     @NonNull
     public String getAbsolutePath() {
@@ -84,9 +84,9 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Determine whether the current resource is exists in the file system.
+     * Determine whether the current res is exists in the file system.
      *
-     * @return true, the current resource exists in the file system;
+     * @return true, the current res exists in the file system;
      * otherwise, false.
      * @see #getFile()
      * @see File#exists()
@@ -102,10 +102,10 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Returns the parent resource of the current resource.
+     * Returns the parent res of the current res.
      *
-     * @return the parent resource of the current resource, or null if
-     * current resource is "/" (in Unix, Linux, MacOS) (or like "C:\"
+     * @return the parent res of the current res, or null if
+     * current res is "/" (in Unix, Linux, MacOS) (or like "C:\"
      * in Windows).
      */
     @Override
@@ -119,7 +119,7 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Each file system resource must be a local resource.
+     * Each file system res must be a local res.
      *
      * @return true
      */
@@ -129,10 +129,10 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Returns the current resource name, Corresponding to the file name or
+     * Returns the current res name, Corresponding to the file name or
      * directory name.
      *
-     * @return the name of current resource.
+     * @return the name of current res.
      * @see #getFile()
      * @see File#getName()
      */
@@ -142,9 +142,9 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Returns the file instance of the current resource.
+     * Returns the file instance of the current res.
      *
-     * @return the file instance of the current resource.
+     * @return the file instance of the current res.
      */
     public File getFile() {
         if (file == null) {
@@ -154,13 +154,13 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Determine whether the current resource is a file. If you need to
+     * Determine whether the current res is a file. If you need to
      * be accurate, be call the method, should call {@link #exists()},
-     * because, if the current resource does not exists, we can't determine
-     * whether the current resource is a file.
+     * because, if the current res does not exists, we can't determine
+     * whether the current res is a file.
      *
-     * @return true, current resource exists and is a file; or false
-     * if the current resource not exists or isn't file..
+     * @return true, current res exists and is a file; or false
+     * if the current res not exists or isn't file..
      * @see #getFile()
      * @see File#isFile()
      */
@@ -169,10 +169,10 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Determine whether the current resource is a jar file.
+     * Determine whether the current res is a jar file.
      *
-     * @return true, if current resource is a jar file, Otherwise, false.
-     * @throws IllegalStateException if the current resource not exits.
+     * @return true, if current res is a jar file, Otherwise, false.
+     * @throws IllegalStateException if the current res not exits.
      */
     public boolean isJarFile() {
         if (!exists()) {
@@ -187,12 +187,12 @@ public class FileSystemResource extends AbstractResource {
     }
 
     /**
-     * Returns the extension of the current resource. If current isn't file,
+     * Returns the extension of the current res. If current isn't file,
      * will return an empty string. otherwise, for example the name of current
-     * resource is example.class, then will return ".class".
+     * res is example.class, then will return ".class".
      *
-     * @return the extension of the current resource, or empty string if the
-     * current resource isn't file or does not have extension.
+     * @return the extension of the current res, or empty string if the
+     * current res isn't file or does not have extension.
      * @see #getName()
      */
     public String getExtension() {

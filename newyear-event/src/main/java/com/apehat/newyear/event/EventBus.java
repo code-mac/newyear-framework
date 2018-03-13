@@ -37,14 +37,17 @@ public final class EventBus implements EventDispatcher<Event> {
      * The single instance of class {@code EventBus}
      */
     private static final EventBus INSTANCE = new EventBus();
+
     /**
      * The policy lock.
      */
     private static final Object LOCK = new Object();
+
     /**
      * The REPOSITORY be used to storeCustom {@code DispatcherProvider}
      */
     private static final Repository REPOSITORY = new Repository();
+
     /**
      * The dispatch policy be use to decision the Event.class and it's implementors
      * class. This is required, for method {@link #getDispatcher(Class)}.
@@ -54,10 +57,12 @@ public final class EventBus implements EventDispatcher<Event> {
     static {
         /*
          * Initialize the REPOSITORY by configured custom.  These custom，
-         * as default implemention， support the even module running.
-         * The configuration file at /META-INF/service/com.apehat.newyear.event.DispatcherProvider
+         * as default implementation， support the even module running.
+         * The configuration file at resources directory
+         * "/META-INF/service/com.apehat.newyear.event.DispatcherProvider"
          */
-        ServiceLoader<DispatcherProvider> providers = ServiceLoader.load(DispatcherProvider.class);
+        ServiceLoader<DispatcherProvider> providers =
+                ServiceLoader.load(DispatcherProvider.class);
         for (DispatcherProvider provider : providers) {
             getInstance().getRepository().storeBuildIn(provider);
         }
@@ -106,8 +111,8 @@ public final class EventBus implements EventDispatcher<Event> {
     /**
      * The method {@link EventDispatcher#submit(Event)} proxy.
      * <p>
-     * This implemention by invoke {@link #getDispatcher(Class)} get a event dispatcher,
-     * then use it to submit.
+     * This implemention by invoke {@link #getDispatcher(Class)} get a event
+     * dispatcher, then use it to submit.
      *
      * @param event the event
      * @see EventDispatcher#submit(Event)
@@ -121,8 +126,8 @@ public final class EventBus implements EventDispatcher<Event> {
     /**
      * The method {@link EventDispatcher#submit(Event)} proxy.
      * <p>
-     * This implemention by invoke {@link #getDispatcher(Class)} get a event dispatcher,
-     * then use it to submit.
+     * This implemention by invoke {@link #getDispatcher(Class)} get a event
+     * dispatcher, then use it to submit.
      *
      * @param eventType  the event type
      * @param subscriber the subscriber
@@ -131,16 +136,19 @@ public final class EventBus implements EventDispatcher<Event> {
      * @see #getDispatcher(Class)
      */
     @Override
-    public <U extends Event> void subscribe(Class<U> eventType, EventSubscriber<? super U> subscriber) {
+    public <U extends Event> void subscribe(Class<U> eventType,
+                                            EventSubscriber<? super U> subscriber) {
         getDispatcher(eventType).subscribe(eventType, subscriber);
     }
 
     /**
-     * @throws UnsupportedOperationException the event bus does not support without type token
+     * @throws UnsupportedOperationException the event bus does not support
+     *                                       without type token
      */
     @Override
     public void subscribe(EventSubscriber<? super Event> subscriber) {
-        throw new UnsupportedOperationException(getClass() + " does not support without type token.");
+        throw new UnsupportedOperationException(getClass()
+                + " does not support without type token.");
     }
 
     /**
@@ -152,16 +160,19 @@ public final class EventBus implements EventDispatcher<Event> {
     }
 
     /**
-     * Register provider by {@code Event.class} as default provider. The provider must can provide
-     * a {@code EventDispatcher}, that can dispatch all {@code Event}.
+     * Register provider by {@code Event.class} as default provider. The provider
+     * must can provide a {@code EventDispatcher}, that can dispatch all
+     * {@code Event}.
      * <p>
-     * The default {@code DispatcherProvider} will be used to provide a {@code EventDispatcher}, when
-     * cannot {@code getDispatcher}, will get the dispatcher by this provider.
+     * The default {@code DispatcherProvider} will be used to provide a
+     * {@code EventDispatcher}, when cannot {@code getDispatcher}, will get
+     * the dispatcher by this provider.
      *
      * @param provider the provider to registered
      * @return this
      * @throws NullPointerException     specified provider is null
-     * @throws IllegalArgumentException default {@code EventDispatcher} already be registered
+     * @throws IllegalArgumentException default {@code EventDispatcher} already
+     *                                  be registered
      * @see #registerProvider(Class, DispatcherProvider)
      */
     public EventBus registerDefaultProvider(DispatcherProvider<EventDispatcher<Event>> provider) {
@@ -177,16 +188,19 @@ public final class EventBus implements EventDispatcher<Event> {
      * @param <T>       the type of type token.
      * @return this
      * @throws NullPointerException     specified event type or provider is null
-     * @throws IllegalArgumentException the provider of specified {@code eventType} already exists.
+     * @throws IllegalArgumentException the provider of specified {@code eventType}
+     *                                  already exists.
      * @see #replcaeProvider(Class, DispatcherProvider)
      */
     public <T extends Event> EventBus registerProvider(
-            Class<T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
+            Class<T> eventType,
+            DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
         Objects.requireNonNull(eventType, "Must specific type token - eventType");
         Objects.requireNonNull(provider, "Must specific provider.");
 
         synchronized (LOCK) {
-            DispatcherProvider<? extends EventDispatcher<? super T>> rp = getRepository().find(eventType);
+            DispatcherProvider<? extends EventDispatcher<? super T>> rp =
+                    getRepository().find(eventType);
             Validation.requireFalse(rp == null || getRepository().isBuildIn(rp),
                     "Already registered a provider [%s], by [%s]", rp, eventType);
         }
@@ -195,11 +209,12 @@ public final class EventBus implements EventDispatcher<Event> {
     }
 
     /**
-     * Mandatory register by specified {@code eventType} and {@code provider}. If the provider of event type
-     * already exists, this will replace old provider. If non old provider, this will to register.
+     * Mandatory register by specified {@code eventType} and {@code provider}.
+     * If the provider of event type already exists, this will replace old
+     * provider. If non old provider, this will to register.
      * <p>
-     * This method is not recommended, unless you must register the {@code provider}, and cannot rewrite old
-     * code source.
+     * This method is not recommended, unless you must register the
+     * {@code provider}, and cannot rewrite old code source.
      *
      * @param eventType the type token, as key.
      * @param provider  the provider as value.
@@ -208,7 +223,8 @@ public final class EventBus implements EventDispatcher<Event> {
      * @throws NullPointerException specified event type or provider is null
      */
     public <T extends Event> EventBus replcaeProvider(
-            Class<T> eventType, DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
+            Class<T> eventType,
+            DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
         Objects.requireNonNull(eventType, "Must specific type token - eventType");
         Objects.requireNonNull(provider, "Must specific provider.");
 
@@ -217,16 +233,16 @@ public final class EventBus implements EventDispatcher<Event> {
     }
 
     /**
-     * Returns a appropriate {@code EventDispatcher} by specified {@code eventType}.
-     * If hadn't register a provider of the event type, or it's superclass, will try to
-     * returns a default dispatcher. If don;t have default dispatcher to use, will throw
-     * a {@link IllegalStateException}.
+     * Returns a appropriate {@code EventDispatcher} by specified {@code
+     * eventType}. If hadn't register a provider of the event type, or it's
+     * superclass, will try to returns a default dispatcher. If don;t have
+     * default dispatcher to use, will throw a {@link IllegalStateException}.
      *
      * @param eventType the type toke, to get dispatcher
-     * @param <T>       the type of type token.
-     * @return a dispatcher.
+     * @param <T>       the type of type token
+     * @return a dispatcher
      * @throws NullPointerException  specified event type of policy is null
-     * @throws IllegalStateException cannot found appropriate dispatcher.
+     * @throws IllegalStateException cannot found appropriate dispatcher
      * @see #registerDefaultProvider(DispatcherProvider)
      */
     public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType) {
@@ -249,12 +265,13 @@ public final class EventBus implements EventDispatcher<Event> {
      * @throws IllegalStateException cannot found appropriate dispatcher.
      * @see EventBusDispatchPolicy
      */
-    public <T extends Event> EventDispatcher<? super T> getDispatcher(Class<T> eventType,
-                                                                      EventBusDispatchPolicy policy) {
+    public <T extends Event> EventDispatcher<? super T> getDispatcher(
+            Class<T> eventType, EventBusDispatchPolicy policy) {
         Objects.requireNonNull(eventType, "Cannot find provider by null");
         Objects.requireNonNull(policy, "Must specified a policy.");
 
-        DispatcherProvider<? extends EventDispatcher<? super T>> provider = getRepository().find(eventType);
+        DispatcherProvider<? extends EventDispatcher<? super T>> provider =
+                getRepository().find(eventType);
 
         if (provider == null) {
             if (logger.isDebugEnabled()) {
@@ -291,6 +308,14 @@ public final class EventBus implements EventDispatcher<Event> {
         return provider.get();
     }
 
+    /**
+     * The help method of {@link #submit(Event)} method. Use Java Language
+     * Generic mechanism recognition the specified {@code event}, in order to
+     * cut back {@code uncheck} warning.
+     *
+     * @param event the event to subscribe.
+     * @param <T>   the type of event.
+     */
     private <T extends Event> void submitHelper(T event) {
         // Type safe, method limit is <T extends Event>
         @SuppressWarnings("unchecked") Class<T> aClass = (Class<T>) event.getClass();
@@ -299,6 +324,11 @@ public final class EventBus implements EventDispatcher<Event> {
         dispatcher.submit(event);
     }
 
+    /**
+     * Returns the repository of this.
+     *
+     * @return the subscriber repository of this.
+     */
     private Repository getRepository() {
         return REPOSITORY;
     }
@@ -327,8 +357,10 @@ public final class EventBus implements EventDispatcher<Event> {
      */
     private static class Repository {
 
-        private final Map<Class<? extends Event>, DispatcherProvider> builtIn = new ConcurrentHashMap<>(16);
-        private final Map<Class<? extends Event>, DispatcherProvider> custom = new ConcurrentHashMap<>();
+        private final Map<Class<? extends Event>, DispatcherProvider> builtIn =
+                new ConcurrentHashMap<>(16);
+        private final Map<Class<? extends Event>, DispatcherProvider> custom =
+                new ConcurrentHashMap<>();
 
         /**
          * Store a build in provider. This method only should be called at initialization.
@@ -344,8 +376,8 @@ public final class EventBus implements EventDispatcher<Event> {
 
             // type safe of EventDispatcher generic statement
             // because already statement EventDispatcher<T extends Event>
-            @SuppressWarnings("unchecked") Class<? extends Event> parameterType =
-                    (Class<? extends Event>) GenericUtils.getGenericParameters(aClass, EventDispatcher.class)[0];
+            @SuppressWarnings("unchecked") Class<? extends Event> parameterType = (Class<? extends Event>) GenericUtils
+                    .getGenericParameters(aClass, EventDispatcher.class)[0];
 
             assert parameterType != null;
 
@@ -360,8 +392,9 @@ public final class EventBus implements EventDispatcher<Event> {
          *                  handle {@code eventType} instance
          * @param <T>       the type token
          */
-        private <T extends Event> void storeCustom(Class<? extends T> eventType,
-                                                   DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
+        private <T extends Event> void storeCustom(
+                Class<? extends T> eventType,
+                DispatcherProvider<? extends EventDispatcher<? super T>> provider) {
             assert eventType != null;
             assert provider != null;
 

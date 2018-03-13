@@ -30,7 +30,7 @@ public abstract class AbstractResource implements Resource {
 
     private synchronized byte[] cachedByteArray() throws IOException {
         if (cis == null) {
-            cis = IOUtils.toByteArray(getInputStream());
+            cis = IOUtils.readAllBytes(getInputStream());
         }
         return cis;
     }

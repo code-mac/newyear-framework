@@ -94,13 +94,13 @@ public class ResourceUtils {
     /**
      * Construct a {@link URL} instance by specified {@code String}.
      *
-     * @param location a {@code String} that represents the resource
+     * @param location a {@code String} that represents the res
      *                 location.
-     * @return a newly {@code URL}, identifies the resource, in specified {@code location}.
+     * @return a newly {@code URL}, identifies the res, in specified {@code location}.
      * @throws MalformedURLException error occur when construct URL.
      */
     public static URL getURL(String location) throws MalformedURLException {
-        Objects.requireNonNull(location, "Must specify resource location");
+        Objects.requireNonNull(location, "Must specify res location");
 
         URL url;
 
@@ -281,7 +281,7 @@ public class ResourceUtils {
 
     /**
      * Determine whether specified url is a class path url.
-     * i.e. has "classpath" protocol, or point to a classpath resource location.
+     * i.e. has "classpath" protocol, or point to a classpath res location.
      *
      * @param url the URL to check
      * @return true, specified url is in a class path; otherwise, false.
@@ -399,7 +399,7 @@ public class ResourceUtils {
     }
 
     public static File getFile(URL url) {
-        Objects.requireNonNull(url, "Must specified resource URL.");
+        Objects.requireNonNull(url, "Must specified res URL.");
         Validation.requireTrue(isFileURL(url) || isJarFileURL(url),
                 "[%s] cannot be resolved to absolute file path, because it isn't a file", url);
         try {

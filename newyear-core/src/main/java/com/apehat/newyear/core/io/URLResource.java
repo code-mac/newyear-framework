@@ -33,7 +33,7 @@ import java.util.Objects;
 public class URLResource implements InputStreamSource {
 
     /**
-     * The URL of current resource.
+     * The URL of current res.
      */
     private final URL url;
 

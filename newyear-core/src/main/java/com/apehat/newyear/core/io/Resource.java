@@ -31,16 +31,16 @@ import java.net.*;
 public interface Resource extends InputStreamSource {
 
     /**
-     * Returns the URL of the current resource.
+     * Returns the URL of the current res.
      *
-     * @return the URL of current resource, or null if get URL failure.
+     * @return the URL of current res, or null if get URL failure.
      */
     URL getURL();
 
     /**
-     * Returns the URI of the current resource.
+     * Returns the URI of the current res.
      *
-     * @return the URI of the current resource, or null if get URI failure.
+     * @return the URI of the current res, or null if get URI failure.
      */
     default URI getURI() {
         try {
@@ -51,32 +51,32 @@ public interface Resource extends InputStreamSource {
     }
 
     /**
-     * Returns the parent resource of the current resource. If the current
-     * resource is at the top, will return null. i.e. if the URL of current
-     * is http://www.example.com/index.html, the URL of the parent resource
-     * for current resource is http://www.example.com. But the parent resource
+     * Returns the parent res of the current res. If the current
+     * res is at the top, will return null. i.e. if the URL of current
+     * is http://www.example.com/index.html, the URL of the parent res
+     * for current res is http://www.example.com. But the parent res
      * of http://www.example.com must be null.
      *
-     * @return the parent resource of the current resource, or null if the
-     * current resource is at the top.
+     * @return the parent res of the current res, or null if the
+     * current res is at the top.
      */
     Resource getParent();
 
     /**
-     * Returns the children resources, if the current resource have children. Or
-     * 0 length resource array, if the current does not have any children.
+     * Returns the children resources, if the current res have children. Or
+     * 0 length res array, if the current does not have any children.
      *
-     * @return the children of the current resource.
-     * @throws IllegalStateException if the current resource cannot expand.
+     * @return the children of the current res.
+     * @throws IllegalStateException if the current res cannot expand.
      */
     default Resource[] expand() {
         return new Resource[0];
     }
 
     /**
-     * Determine whether the current resource is exists.
+     * Determine whether the current res is exists.
      *
-     * @return true, current resource is exists; otherwise, false.
+     * @return true, current res is exists; otherwise, false.
      */
     default boolean exists() {
         try {
@@ -102,43 +102,43 @@ public interface Resource extends InputStreamSource {
     }
 
     /**
-     * Returns the name of the current resource. If the current resource is an
-     * network resource, and URL like: http://www.example.com, this method
-     * should return www.example.com, as the name of current resource. Else if
-     * the current resource {@code isLocal()}, will return the name of current
+     * Returns the name of the current res. If the current res is an
+     * network res, and URL like: http://www.example.com, this method
+     * should return www.example.com, as the name of current res. Else if
+     * the current res {@code isLocal()}, will return the name of current
      * file of directory.
      *
-     * @return the name of current resource, or mepty string if current resource
+     * @return the name of current res, or mepty string if current res
      * don't have name.
      */
     String getName();
 
     /**
-     * Determine whether the current resource is local resource. No matter the
-     * current resource is {@code exists()}, the method should can determine
-     * whether the current resource is local.
+     * Determine whether the current res is local res. No matter the
+     * current res is {@code exists()}, the method should can determine
+     * whether the current res is local.
      *
-     * @return true, the current resource is local resource. otherwise, false.
+     * @return true, the current res is local res. otherwise, false.
      */
     boolean isLocal();
 
     /**
-     * Returns the byte data of the current resource.
+     * Returns the byte data of the current res.
      *
-     * @return the byte data of the current resource.
+     * @return the byte data of the current res.
      * @throws IOException I/O Exception occur.
      * @see #getInputStream()
-     * @see IOUtils#toByteArray(InputStream)
+     * @see IOUtils#readAllBytes(InputStream)
      */
     default byte[] getByteArray() throws IOException {
-        return IOUtils.toByteArray(getInputStream());
+        return IOUtils.readAllBytes(getInputStream());
     }
 
     /**
-     * Returns the input stream of the current resource.
+     * Returns the input stream of the current res.
      *
-     * @return the input stream of the current resource.
-     * @throws IOException the current resource is not exists,
+     * @return the input stream of the current res.
+     * @throws IOException the current res is not exists,
      *                     or if an I/O exception occurs.
      */
     @Override

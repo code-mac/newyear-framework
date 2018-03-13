@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-dependencies {
-    compile(project(":newyear-core"))
-    compile(project(":newyear-event"))
+package com.apehat.newyear.event.annotation;
 
-    compile 'javax.servlet:javax.servlet-api:4.0.0'
-
-    testCompile 'junit:junit:4.12'
+/**
+ * @author hanpengfei
+ * @since 1.0
+ */
+public interface SubscribeParser {
 }
